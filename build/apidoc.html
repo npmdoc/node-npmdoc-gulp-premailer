@@ -1,0 +1,250 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/justin713/gulp-premailer"
+
+    >gulp-premailer (v0.4.0)</a>
+</h1>
+<h4>A gulp module using Premailer to bring CSS styles inline when developing HTML emails.</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.gulp-premailer">module gulp-premailer</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.gulp-premailer.gulp-premailer">
+            function <span class="apidocSignatureSpan"></span>gulp-premailer
+            <span class="apidocSignatureSpan">(opts)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.gulp-premailer.toString">
+            function <span class="apidocSignatureSpan">gulp-premailer.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.gulp-premailer" id="apidoc.module.gulp-premailer">module gulp-premailer</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.gulp-premailer.gulp-premailer" id="apidoc.element.gulp-premailer.gulp-premailer">
+        function <span class="apidocSignatureSpan"></span>gulp-premailer
+        <span class="apidocSignatureSpan">(opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">gulp-premailer = function (opts) {
+	try {
+		which.sync(&#x27;premailer&#x27;);
+	} catch (err) {
+		throw new gutil.PluginError(&#x27;gulp-premailer&#x27;, &#x27;You need to have Ruby and Premailer installed and in your PATH for this task to
+ work.&#x27;);
+	}
+
+	var stream = through.obj(function (file, enc, done) {
+		if (file.isNull()) {
+			self.push(file);
+			return done();
+		}
+
+		if (file.isStream()) {
+			self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;gulp-premailer&#x27;, &#x27;Streaming not supported&#x27;));
+			return done();
+		}
+
+		file.contents = new Buffer(file.contents.toString());
+
+		var self = this;
+		var errors = &#x27;&#x27;;
+		var bufferObjs = [];
+		var args = [file.path];
+
+		// Convert JS object to CLI args.. i.e. query-string: foo to
+		// --query-string=foo
+
+		// Only some CLI arguments need a value
+		var needsValue = [
+			&#x27;mode&#x27;,
+			&#x27;m&#x27;,
+			&#x27;base-url&#x27;,
+			&#x27;b&#x27;,
+			&#x27;query-string&#x27;,
+			&#x27;q&#x27;,
+			&#x27;css&#x27;,
+			&#x27;line-length&#x27;,
+			&#x27;l&#x27;
+		];
+
+		if (typeof(opts) == &#x27;object&#x27;) {
+			Object.keys(opts).forEach(function (key) {
+				if (opts[key]) {
+					var out = &#x27;&#x27;;
+					var key = key.replace(/^--/,&#x27;&#x27;);
+					var doesNeedValue = (needsValue.indexOf(key) != -1);
+
+					// Check if the argument needs a value, or if it doesn&#x27;t, then the value is
+					// truthy.. i.e. version: true
+					if (doesNeedValue || opts[key]) {
+						out += &#x27;--&#x27; + key;
+					}
+
+					// Add the value for the argument
+					if (doesNeedValue) {
+						out += &#x27;=&#x27; + opts[key] + &#x27;&#x27;;
+					}
+
+					if (out != &#x27;&#x27;) {
+						args.push(out);
+					}
+				}
+			});
+		}
+
+		var cp = spawn(&#x27;premailer&#x27;, args);
+
+		cp.on(&#x27;error&#x27;, function (err) {
+			self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;gulp-premailer&#x27;, err));
+			self.push(file);
+			return done();
+		});
+
+		cp.stderr.on(&#x27;data&#x27;, function (data) {
+			errors += data;
+		});
+
+		cp.stdout.on(&#x27;data&#x27;, function (data) {
+			bufferObjs.push(data);
+		});
+
+		cp.on(&#x27;close&#x27;, function (code) {
+			if (code === 127) {
+				self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;gulp-premailer&#x27;, &#x27;You need to have Ruby and Premailer installed and in your PATH for
+ this task to work.&#x27;));
+				self.push(file);
+				return done();
+			}
+
+			if (errors) {
+				self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;gulp-premailer&#x27;, &#x27;\n&#x27; + errors.replace(&#x27;Use --trace for backtrace.\n&#x27;, &#x27;&#x27;)));
+				self.push(file);
+				return done();
+			}
+
+			if (code &#x3e; 0) {
+				self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;gulp-premailer&#x27;, &#x27;Exited with error code &#x27; + code));
+				self.push(file);
+				return done();
+			}
+
+			file.contents = new Buffer.concat(bufferObjs);
+			self.push(file);
+			done();
+		});
+	});
+
+	return stream;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.gulp-premailer.toString" id="apidoc.element.gulp-premailer.toString">
+        function <span class="apidocSignatureSpan">gulp-premailer.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+		}
+
+		if (file.isStream()) {
+			self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;gulp-premailer&#x27;, &#x27;Streaming not supported&#x27;));
+			return done();
+		}
+
+		file.contents = new Buffer(file.contents.<span class="apidocCodeKeywordSpan">toString</span>());
+
+		var self = this;
+		var errors = &#x27;&#x27;;
+		var bufferObjs = [];
+		var args = [file.path];
+
+		// Convert JS object to CLI args.. i.e. query-string: foo to
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
