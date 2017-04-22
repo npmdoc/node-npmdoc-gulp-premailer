@@ -1,4 +1,7 @@
-# api documentation for  [gulp-premailer (v0.4.0)](https://github.com/justin713/gulp-premailer)  [![npm package](https://img.shields.io/npm/v/npmdoc-gulp-premailer.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-gulp-premailer) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-gulp-premailer.svg)](https://travis-ci.org/npmdoc/node-npmdoc-gulp-premailer)
+# npmdoc-gulp-premailer
+
+#### api documentation for  [gulp-premailer (v0.4.0)](https://github.com/justin713/gulp-premailer)  [![npm package](https://img.shields.io/npm/v/npmdoc-gulp-premailer.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-gulp-premailer) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-gulp-premailer.svg)](https://travis-ci.org/npmdoc/node-npmdoc-gulp-premailer)
+
 #### A gulp module using Premailer to bring CSS styles inline when developing HTML emails.
 
 [![NPM](https://nodei.co/npm/gulp-premailer.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/gulp-premailer)
@@ -69,7 +72,8 @@
     "scripts": {
         "test": "mocha --reporter spec"
     },
-    "version": "0.4.0"
+    "version": "0.4.0",
+    "bin": {}
 }
 ```
 
