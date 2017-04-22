@@ -63,15 +63,6 @@
 
         </li>
 
-        <li>
-
-            <a class="apidocElementLiA" href="#apidoc.element.gulp-premailer.toString">
-            function <span class="apidocSignatureSpan">gulp-premailer.</span>toString
-            <span class="apidocSignatureSpan">()</span>
-            </a>
-
-        </li>
-
     </ol></li>
 
 </ol></div>
@@ -199,37 +190,6 @@
 	return stream;
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
-    </ul>
-
-
-
-    <h2>
-        <a href="#apidoc.element.gulp-premailer.toString" id="apidoc.element.gulp-premailer.toString">
-        function <span class="apidocSignatureSpan">gulp-premailer.</span>toString
-        <span class="apidocSignatureSpan">()</span>
-        </a>
-    </h2>
-    <ul>
-    <li>description and source-code<pre class="apidocCodePre">toString = function () {
-    return text;
-}</pre></li>
-    <li>example usage<pre class="apidocCodePre">...
-		}
-
-		if (file.isStream()) {
-			self.emit('error', new gutil.PluginError('gulp-premailer', 'Streaming not supported'));
-			return done();
-		}
-
-		file.contents = new Buffer(file.contents.<span class="apidocCodeKeywordSpan">toString</span>());
-
-		var self = this;
-		var errors = '';
-		var bufferObjs = [];
-		var args = [file.path];
-
-		// Convert JS object to CLI args.. i.e. query-string: foo to
-...</pre></li>
     </ul>
 
 
